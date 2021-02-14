@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Asuka.Commands;
 using Asuka.Configuration;
 using Asuka.Database;
@@ -59,7 +60,22 @@ namespace Asuka.Modules.Tags
         [Remarks("Edit an existing tag from the server.")]
         public async Task EditAsync(string tagName, string tagContent)
         {
-            await Task.CompletedTask;
+            using IUnitOfWork work = _unitOfWork;
+            var tag = await work.Tags.GetAsync(tagName);
+            tag.Content = tagContent;
+            Console.WriteLine(tag.UserId);
+            Console.WriteLine(tag.GuildId);
+
+            try
+            {
+                await work.Tags.UpdateAsync(tag);
+                work.Commit();
+                await ReplyAsync($"Updated tag `{tag.Name}` with content `{tag.Content}`.");
+            }
+            catch
+            {
+                await ReplyAsync($"Failed to update `{tagName}` with content `{tag.Content}`.");
+            }
         }
 
         [Command("get")]

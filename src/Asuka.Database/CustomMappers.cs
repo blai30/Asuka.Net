@@ -16,6 +16,9 @@ namespace Asuka.Database
             // Configure Dapper.FluentMap.
             FluentMapper.Initialize(config =>
             {
+                config.AddConvention<PropertyTransformConvention>()
+                    .ForEntitiesInCurrentAssembly("Asuka.Database.Models");
+
                 // Entity maps.
                 config.AddMap(new TagMap());
             });

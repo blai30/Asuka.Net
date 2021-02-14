@@ -30,14 +30,16 @@ namespace Asuka.Database.Repositories
             return id;
         }
 
-        public async Task<int> UpdateAsync(Tag entity)
+        public async Task<bool> UpdateAsync(Tag entity)
         {
-            throw new System.NotImplementedException();
+            bool success = await Connection.UpdateAsync(entity, Transaction);
+            return success;
         }
 
-        public async Task<int> DeleteAsync(Tag entity)
+        public async Task<bool> DeleteAsync(Tag entity)
         {
-            throw new System.NotImplementedException();
+            bool success = await Connection.DeleteAsync(entity, Transaction);
+            return success;
         }
 
         public async Task<Tag> GetAsync(string tagName)

@@ -8,7 +8,7 @@ namespace Asuka.Database.Repositories
         Task<T> GetAsync(int id);
         Task<IEnumerable<T>> GetAllAsync();
         Task<object> AddAsync(T entity);
-        Task<int> UpdateAsync(T entity);
-        Task<int> DeleteAsync(T entity);
+        Task<bool> UpdateAsync(T entity);
+        Task<bool> DeleteAsync(T entity);
     }
 }
