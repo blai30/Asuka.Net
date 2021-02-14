@@ -37,16 +37,11 @@ namespace Asuka.Modules.Tags
                 GuildId = Context.Guild.Id
             };
 
-            // try
-            // {
-                await _unitOfWork.Tags.AddAsync(tag);
-                _unitOfWork.Complete();
-                await ReplyAsync($"Added new tag `{tag.Name}`.");
-            // }
-            // catch
-            // {
-            //     await ReplyAsync($"Error adding `{tagName}`, either a tag with the same name already exists or the input parameters are invalid.");
-            // }
+            using IUnitOfWork work = _unitOfWork;
+            await work.Tags.AddAsync(tag);
+            work.Commit();
+            await ReplyAsync($"Added new tag `{tag.Name}`.");
+            // await ReplyAsync($"Error adding `{tagName}`, either a tag with the same name already exists or the input parameters are invalid.");
         }
 
         [Command("edit")]
@@ -62,7 +57,8 @@ namespace Asuka.Modules.Tags
         [Remarks("Get an existing tag from the server.")]
         public async Task GetAsync(string tagName)
         {
-            var tag = await _unitOfWork.Tags.GetAsync(tagName);
+            using IUnitOfWork work = _unitOfWork;
+            var tag = await work.Tags.GetAsync(tagName);
             string content = tag.Content;
 
             // No such tag exists in guild.

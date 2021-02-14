@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
 using Asuka.Database.Repositories;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,6 +15,14 @@ namespace Asuka.Database
         private IDbTransaction _transaction;
         private bool _disposed;
 
+        public ITagRepository Tags
+        {
+            get
+            {
+                return _tags ??= new TagRepository(_transaction);
+            }
+        }
+
         public UnitOfWork(IServiceScopeFactory scopeFactory)
         {
             using var scope = scopeFactory.CreateScope();
@@ -26,15 +35,7 @@ namespace Asuka.Database
             _transaction = _connection.BeginTransaction();
         }
 
-        public ITagRepository Tags
-        {
-            get
-            {
-                return _tags ??= new TagRepository(_transaction);
-            }
-        }
-
-        public void Complete()
+        public void Commit()
         {
             try
             {
@@ -69,6 +70,7 @@ namespace Asuka.Database
                 _connection = null;
             }
 
+            Console.WriteLine("Unit of work disposed");
             _disposed = true;
         }
 

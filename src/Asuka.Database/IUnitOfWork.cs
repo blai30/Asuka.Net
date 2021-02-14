@@ -7,6 +7,6 @@ namespace Asuka.Database
     {
         ITagRepository Tags { get; }
 
-        void Complete();
+        void Commit();
     }
 }
