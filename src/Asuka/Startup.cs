@@ -66,6 +66,7 @@ namespace Asuka
                     IgnoreExtraArgs = true
                 }))
 
+                // Data access.
                 .AddTransient<IUnitOfWork, UnitOfWork>()
 
                 // Http client for interfacing with Api requests.

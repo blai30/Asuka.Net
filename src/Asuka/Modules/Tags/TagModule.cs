@@ -14,6 +14,10 @@ namespace Asuka.Modules.Tags
     [RequireContext(ContextType.Guild)]
     public class TagModule : CommandModuleBase
     {
+        /// <summary>
+        /// Must create local variable with using statement to ensure proper disposal.
+        /// Do not access this field directly to call methods.
+        /// </summary>
         private readonly IUnitOfWork _unitOfWork;
 
         public TagModule(
@@ -38,10 +42,16 @@ namespace Asuka.Modules.Tags
             };
 
             using IUnitOfWork work = _unitOfWork;
-            await work.Tags.AddAsync(tag);
-            work.Commit();
-            await ReplyAsync($"Added new tag `{tag.Name}`.");
-            // await ReplyAsync($"Error adding `{tagName}`, either a tag with the same name already exists or the input parameters are invalid.");
+            try
+            {
+                await work.Tags.AddAsync(tag);
+                work.Commit();
+                await ReplyAsync($"Added new tag `{tag.Name}`.");
+            }
+            catch
+            {
+                await ReplyAsync($"A tag with name `{tagName}` already exists in this server.");
+            }
         }
 
         [Command("edit")]
