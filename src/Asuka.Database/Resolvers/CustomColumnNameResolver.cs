@@ -2,7 +2,7 @@
 using Dommel;
 using Humanizer;
 
-namespace Asuka.Database.Mappers
+namespace Asuka.Database.Resolvers
 {
     /// <summary>
     /// Maps the POCO PascalCase property names to snake_case column names.

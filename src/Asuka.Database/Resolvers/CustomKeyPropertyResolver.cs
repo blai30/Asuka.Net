@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Dommel;
 
-namespace Asuka.Database.Mappers
+namespace Asuka.Database.Resolvers
 {
     /// <summary>
     /// Defines the primary key POCO property to be Id or EntityId.

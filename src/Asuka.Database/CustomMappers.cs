@@ -1,4 +1,5 @@
 ﻿using Asuka.Database.Mappers;
+using Asuka.Database.Resolvers;
 using Dapper.FluentMap;
 using Dapper.FluentMap.Dommel.Resolvers;
 using Dommel;
