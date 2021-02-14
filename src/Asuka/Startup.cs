@@ -3,7 +3,6 @@ using System.Data;
 using System.Net.Http;
 using Asuka.Configuration;
 using Asuka.Database;
-using Asuka.Database.Controllers;
 using Asuka.Services;
 using Discord;
 using Discord.Commands;
@@ -27,6 +26,9 @@ namespace Asuka
                 .ReadFrom.Configuration(Configuration)
                 .Enrich.FromLogContext()
                 .CreateLogger();
+
+            // Initialize Dapper.FluentMap and Dommel maps.
+            CustomMappers.Initialize();
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -64,9 +66,7 @@ namespace Asuka
                     IgnoreExtraArgs = true
                 }))
 
-                // Data access.
-                .AddDbContext<AsukaDbContext>()
-                .AddTransient<AsukaDbController>()
+                .AddTransient<IUnitOfWork, UnitOfWork>()
 
                 // Http client for interfacing with Api requests.
                 .AddSingleton<HttpClient>()
