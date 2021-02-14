@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Asuka.Commands;
 using Asuka.Configuration;
-using Asuka.Database.Controllers;
+using Asuka.Database;
 using Asuka.Database.Models;
 using Discord.Commands;
 using Microsoft.Extensions.Options;
@@ -14,14 +14,14 @@ namespace Asuka.Modules.Tags
     [RequireContext(ContextType.Guild)]
     public class TagModule : CommandModuleBase
     {
-        private readonly AsukaDbController _controller;
+        private readonly IUnitOfWork _unitOfWork;
 
         public TagModule(
             IOptions<DiscordOptions> config,
-            AsukaDbController controller) :
+            IUnitOfWork unitOfWork) :
             base(config)
         {
-            _controller = controller;
+            _unitOfWork = unitOfWork;
         }
 
         [Command("add")]
@@ -37,15 +37,16 @@ namespace Asuka.Modules.Tags
                 GuildId = Context.Guild.Id
             };
 
-            try
-            {
-                await _controller.AddAsync(tag);
+            // try
+            // {
+                await _unitOfWork.Tags.AddAsync(tag);
+                _unitOfWork.Complete();
                 await ReplyAsync($"Added new tag `{tag.Name}`.");
-            }
-            catch
-            {
-                await ReplyAsync($"Error adding `{tagName}`, either a tag with the same name already exists or the input parameters are invalid.");
-            }
+            // }
+            // catch
+            // {
+            //     await ReplyAsync($"Error adding `{tagName}`, either a tag with the same name already exists or the input parameters are invalid.");
+            // }
         }
 
         [Command("edit")]
@@ -61,7 +62,8 @@ namespace Asuka.Modules.Tags
         [Remarks("Get an existing tag from the server.")]
         public async Task GetAsync(string tagName)
         {
-            var content = await _controller.GetTagAsync(tagName);
+            var tag = await _unitOfWork.Tags.GetAsync(tagName);
+            string content = tag.Content;
 
             // No such tag exists in guild.
             if (string.IsNullOrEmpty(content))
