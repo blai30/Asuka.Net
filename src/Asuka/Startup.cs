@@ -27,6 +27,7 @@ namespace Asuka
                 .Enrich.FromLogContext()
                 .CreateLogger();
 
+            // Initialize Dapper.FluentMap and Dommel maps.
             CustomMappers.Initialize();
         }
 

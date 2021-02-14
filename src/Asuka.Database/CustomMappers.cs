@@ -1,7 +1,6 @@
 ﻿using Asuka.Database.Mappers;
-using Asuka.Database.Models;
 using Dapper.FluentMap;
-using Dapper.FluentMap.Dommel;
+using Dapper.FluentMap.Dommel.Resolvers;
 using Dommel;
 
 namespace Asuka.Database
@@ -13,24 +12,18 @@ namespace Asuka.Database
     {
         public static void Initialize()
         {
-            // Configure mapping to snake_case tables and columns.
-            // Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
-
-            // Configure Dapper.FluentMap conventions.
+            // Configure Dapper.FluentMap.
             FluentMapper.Initialize(config =>
             {
                 // Entity maps.
                 config.AddMap(new TagMap());
-                // config.AddConvention<PropertyTransformConvention>()
-                //     .ForEntitiesInCurrentAssembly("Asuka.Database.Models");
-                // config.AddConvention<PropertyTransformConvention>()
-                //     .ForEntity<Tag>();
-
-                // Dommel mappers.
-                config.ForDommel();
             });
-            DommelMapper.SetTableNameResolver(new TableNameSnakeCaseResolver());
-            DommelMapper.SetColumnNameResolver(new ColumnNameSnakeCaseResolver());
+
+            // Dommel mappers.
+            DommelMapper.SetColumnNameResolver(new CustomColumnNameResolver());
+            DommelMapper.SetKeyPropertyResolver(new CustomKeyPropertyResolver());
+            DommelMapper.SetTableNameResolver(new CustomTableNameResolver());
+            DommelMapper.SetPropertyResolver(new DommelPropertyResolver());
         }
     }
 }
